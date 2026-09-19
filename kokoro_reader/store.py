@@ -27,6 +27,7 @@ class DocMeta:
     segment_count: int
     voice: str = "af_heart"
     position: dict = field(default_factory=lambda: {"segment": 0, "offset": 0.0})
+    ephemeral: bool = False  # a "listen now" document: hidden from the library, deleted when abandoned
 
 
 def doc_dir(doc_id: str) -> Path:
@@ -50,13 +51,14 @@ def create_doc(title: str, filename: str, segments: list[str], source: Path, voi
     return meta
 
 
-def create_text_doc(title: str, source: str, segments: list[str], text: str, voice: str) -> DocMeta:
+def create_text_doc(title: str, source: str, segments: list[str], text: str, voice: str, ephemeral: bool = False) -> DocMeta:
     doc_id = secrets.token_hex(6)
     d = doc_dir(doc_id)
     (d / "audio").mkdir(parents=True)
     (d / "source.txt").write_text(text)
     (d / "segments.json").write_text(json.dumps(segments, ensure_ascii=False))
-    meta = DocMeta(id=doc_id, title=title, filename=source, created=time.time(), segment_count=len(segments), voice=voice)
+    meta = DocMeta(id=doc_id, title=title, filename=source, created=time.time(), segment_count=len(segments), voice=voice,
+                   ephemeral=ephemeral)
     save_meta(meta)
     return meta
 
@@ -87,16 +89,19 @@ def load_segments(doc_id: str) -> list[str]:
     return json.loads((doc_dir(doc_id) / "segments.json").read_text())
 
 
-def list_docs() -> list[DocMeta]:
+def list_docs(include_ephemeral: bool = False) -> list[DocMeta]:
     if not DOCS_DIR.exists():
         return []
     metas = []
     for d in DOCS_DIR.iterdir():
         if (d / "meta.json").exists():
             try:
-                metas.append(load_meta(d.name))
+                meta = load_meta(d.name)
             except (ValueError, TypeError):
                 continue  # one damaged document must not hide the rest
+            if meta.ephemeral and not include_ephemeral:
+                continue
+            metas.append(meta)
     return sorted(metas, key=lambda m: m.created, reverse=True)
 
 
@@ -111,3 +116,13 @@ def generated_indices(doc_id: str, voice: str) -> set[int]:
     if not folder.exists():
         return set()
     return {int(p.stem) for p in folder.glob("*.wav")}
+
+
+def purge_stale_ephemeral(max_age_seconds: float = 24 * 3600) -> int:
+    """Delete quick-listen documents that were never saved and are older than a day."""
+    n = 0
+    for meta in list_docs(include_ephemeral=True):
+        if meta.ephemeral and time.time() - meta.created > max_age_seconds:
+            delete_doc(meta.id)
+            n += 1
+    return n

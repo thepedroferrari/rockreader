@@ -48,6 +48,9 @@ async def lifespan(app: FastAPI):
     import threading
 
     threading.Thread(target=synth.load, daemon=True).start()
+    purged = store.purge_stale_ephemeral()
+    if purged:
+        log.info("purged %d stale quick-listen documents", purged)
     worker.start()
     yield
 
@@ -90,22 +93,28 @@ async def api_upload(file: UploadFile, voice: str = "af_heart"):
     return asdict(meta)
 
 
+QUICK_LISTEN_MAX_CHARS = 10_000
+
+
 class TextUpload(BaseModel):
     title: str = ""
     text: str
     voice: str = "af_heart"
     source_url: str | None = None
+    ephemeral: bool = False  # "listen now": hidden from the library, deleted unless kept
 
 
 @app.post("/api/docs/text")
 def api_upload_text(body: TextUpload):
     """Pasted or extension-supplied text. The extension sends the page's readable text."""
     _check_voice(body.voice)
+    if body.ephemeral and len(body.text) > QUICK_LISTEN_MAX_CHARS:
+        raise HTTPException(400, f"listen now is limited to {QUICK_LISTEN_MAX_CHARS:,} characters; add longer text to the library")
     segments = segment(clean_text(body.text))
     if not segments:
         raise HTTPException(400, "no readable text")
     title = body.title.strip() or segments[0][:60].rsplit(" ", 1)[0]
-    meta = store.create_text_doc(title, body.source_url or "pasted text", segments, body.text, body.voice)
+    meta = store.create_text_doc(title, body.source_url or "pasted text", segments, body.text, body.voice, ephemeral=body.ephemeral)
     worker.focus(meta.id, 0)
     return asdict(meta)
 
@@ -147,6 +156,13 @@ def api_doc(doc_id: str):
     except FileNotFoundError:
         raise HTTPException(404)
     return {"meta": asdict(meta), "segments": store.load_segments(doc_id)}
+
+
+@app.put("/api/docs/{doc_id}/keep")
+def api_keep(doc_id: str):
+    """Promote a quick listen into a library document."""
+    meta = store.update_meta(doc_id, ephemeral=False)
+    return asdict(meta)
 
 
 @app.delete("/api/docs/{doc_id}")
@@ -225,6 +241,11 @@ def api_export(doc_id: str):
         )
     safe = "".join(c if c.isalnum() or c in " -_" else "_" for c in meta.title)[:80] or "audiobook"
     return FileResponse(out, media_type="audio/mpeg", filename=f"{safe}.mp3")
+
+
+@app.get("/api/config")
+def api_config():
+    return {"quick_listen_max_chars": QUICK_LISTEN_MAX_CHARS}
 
 
 @app.get("/api/voices")

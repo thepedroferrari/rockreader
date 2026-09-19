@@ -103,7 +103,9 @@ async function changeVoice(id) {
 async function showLibrary() {
   history.replaceState(null, "", "/");
   stop();
+  if (doc && doc.meta.ephemeral) fetch(`/api/docs/${doc.meta.id}`, { method: "DELETE" }).catch(() => {});
   doc = null;
+  $("keep").hidden = true;
   $("reader").hidden = true; $("player").hidden = true; $("back").hidden = true;
   $("library").hidden = false;
   $("title").textContent = "RockReader";
@@ -133,12 +135,50 @@ $("docs").addEventListener("click", async (e) => {
 });
 
 let inputMode = "file";
+let quickMax = 10000;
+api("/api/config").then((c) => { quickMax = c.quick_listen_max_chars; refreshUploadButton(); }).catch(() => {});
 function refreshUploadButton() {
+  const text = $("paste-text").value;
   const ok = inputMode === "file" ? $("file").files.length > 0
-    : inputMode === "paste" ? $("paste-text").value.trim().length > 0
+    : inputMode === "paste" ? text.trim().length > 0
     : $("url").value.trim().length > 0;
   $("upload-btn").disabled = !ok;
+  const paste = inputMode === "paste";
+  $("listen-btn").hidden = !paste;
+  const over = text.length > quickMax;
+  $("listen-btn").disabled = !ok || over;
+  $("upload-btn").classList.toggle("primary", !paste || over);
+  $("listen-btn").classList.toggle("primary", paste && !over);
+  if (paste) {
+    $("paste-count").textContent = text.length === 0 ? `Up to ${quickMax.toLocaleString()} characters can be listened to right away without saving.`
+      : over ? `${text.length.toLocaleString()} characters. That is over ${quickMax.toLocaleString()}, so add it to the library and it will play as it generates.`
+      : `${text.length.toLocaleString()} / ${quickMax.toLocaleString()} characters`;
+  }
 }
+$("listen-btn").addEventListener("click", async () => {
+  const voice = $("upload-voice").value;
+  $("listen-btn").disabled = true; $("listen-btn").textContent = "Preparing…";
+  try {
+    const meta = await api("/api/docs/text", json({ title: $("paste-title").value || "Quick listen", text: $("paste-text").value, voice, ephemeral: true }));
+    $("upload").reset();
+    $("file").dispatchEvent(new Event("change"));
+    await openDoc(meta.id);
+    $("play").click();
+  } catch (err) {
+    alert(err.message);
+  } finally {
+    $("listen-btn").textContent = "Listen now";
+    refreshUploadButton();
+  }
+});
+$("keep").addEventListener("click", async () => {
+  if (!doc) return;
+  const meta = await api(`/api/docs/${doc.meta.id}/keep`, { method: "PUT" });
+  doc.meta.ephemeral = meta.ephemeral;
+  $("keep").hidden = true;
+  $("status").textContent = "saved";
+  setTimeout(() => { if ($("status").textContent === "saved") $("status").textContent = ""; }, 2000);
+});
 for (const tab of document.querySelectorAll(".tab")) {
   tab.addEventListener("click", () => {
     inputMode = tab.dataset.tab;
@@ -194,6 +234,7 @@ async function openDoc(id) {
   index = doc.meta.position.segment;
   $("library").hidden = true; $("reader").hidden = false; $("player").hidden = false; $("back").hidden = false;
   $("title").textContent = doc.meta.title;
+  $("keep").hidden = !doc.meta.ephemeral;
   setVoiceInput("voice", doc.meta.voice);
   $("text").innerHTML = doc.segments.map((s, i) => `<p data-i="${i}">${escape(s)}</p>`).join("");
   $("export").href = `/api/docs/${id}/export`;
@@ -279,19 +320,30 @@ $("next").addEventListener("click", () => jump(index + 1, !audio.paused));
 $("rew").addEventListener("click", () => seekBy(-15));
 $("ffw").addEventListener("click", () => seekBy(15));
 
-const SPEEDS = [1, 1.25, 1.5, 1.75, 2, 0.8];
+const SPEED_PRESETS = [0.8, 1, 1.2, 1.5, 1.75, 2, 2.5];
+const getSpeed = () => parseFloat(localStorage.getItem("speed") || "1");
+function setSpeed(s) {
+  s = Math.round(Math.min(3, Math.max(0.5, s)) * 20) / 20;
+  localStorage.setItem("speed", String(s));
+  applySpeed();
+}
 function applySpeed() {
-  const s = parseFloat(localStorage.getItem("speed") || "1");
+  const s = getSpeed();
   audio.playbackRate = s;
-  $("speed").textContent = `${s}×`;
+  const label = `${s}×`;
+  $("speed").textContent = label; $("speed-value").textContent = label;
+  $("speed-range").value = s;
+  for (const b of $("speed-chips").children) b.classList.toggle("on", parseFloat(b.dataset.s) === s);
   updateReadout();
 }
-$("speed").addEventListener("click", () => {
-  const cur = parseFloat(localStorage.getItem("speed") || "1");
-  const next = SPEEDS[(SPEEDS.indexOf(cur) + 1) % SPEEDS.length] || 1;
-  localStorage.setItem("speed", String(next));
-  applySpeed();
-});
+$("speed-chips").innerHTML = SPEED_PRESETS.map((s) => `<button type="button" data-s="${s}">${s}×</button>`).join("");
+$("speed-chips").addEventListener("click", (e) => { const b = e.target.closest("[data-s]"); if (b) setSpeed(parseFloat(b.dataset.s)); });
+$("speed-range").addEventListener("input", () => setSpeed(parseFloat($("speed-range").value)));
+let speedOpen = false;
+function openSpeed() { speedOpen = true; $("speed-pop").hidden = false; $("scrim").hidden = false; $("speed-range").focus(); }
+function closeSpeed() { speedOpen = false; $("speed-pop").hidden = true; if (!pickerTarget) $("scrim").hidden = true; }
+$("speed").addEventListener("click", () => (speedOpen ? closeSpeed() : openSpeed()));
+$("scrim").addEventListener("click", closeSpeed);
 
 function seekBy(s) {
   if (!audio.src) return;
@@ -302,8 +354,11 @@ function seekBy(s) {
 }
 
 document.addEventListener("keydown", (e) => {
-  if (e.code === "Escape" && pickerTarget) { closePicker(); return; }
-  if (!doc || pickerTarget || ["SELECT", "INPUT", "TEXTAREA"].includes(e.target.tagName)) return;
+  if (e.code === "Escape" && (pickerTarget || speedOpen)) { closePicker(); closeSpeed(); return; }
+  if (!doc || pickerTarget || (["SELECT", "INPUT", "TEXTAREA"].includes(e.target.tagName) && e.target.id !== "speed-range")) return;
+  if (e.key === "[") { setSpeed(getSpeed() - 0.1); return; }
+  if (e.key === "]") { setSpeed(getSpeed() + 0.1); return; }
+  if (speedOpen) return;
   if (e.code === "Space") { e.preventDefault(); $("play").click(); }
   else if (e.code === "ArrowLeft") seekBy(-15);
   else if (e.code === "ArrowRight") seekBy(15);

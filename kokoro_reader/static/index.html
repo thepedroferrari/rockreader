@@ -12,6 +12,7 @@
   <button id="back" class="icon" hidden title="Library" aria-label="Back to library">&#8592;</button>
   <h1 id="title">RockReader</h1>
   <span id="status" class="muted"></span>
+  <button id="keep" class="primary small-btn" hidden>Save to library</button>
 </header>
 
 <main id="library">
@@ -30,6 +31,7 @@
     <div class="pane" data-pane="paste" hidden>
       <input type="text" id="paste-title" placeholder="Title (optional)">
       <textarea id="paste-text" rows="8" placeholder="Paste text here"></textarea>
+      <p class="muted hint" id="paste-count"></p>
     </div>
     <div class="pane" data-pane="url" hidden>
       <input type="url" id="url" placeholder="https://arxiv.org/abs/… or any article link">
@@ -38,6 +40,8 @@
     <div class="row">
       <input type="hidden" id="upload-voice" value="af_heart">
       <button type="button" class="voice-btn" data-for="upload-voice">Voice: <b>Heart</b></button>
+      <span class="spacer"></span>
+      <button type="button" id="listen-btn" class="primary" hidden disabled>Listen now</button>
       <button type="submit" id="upload-btn" disabled>Add to library</button>
     </div>
   </form>
@@ -67,7 +71,7 @@
       <button class="icon" id="next" title="Next paragraph (↓)" aria-label="Next paragraph">&#9197;</button>
     </div>
     <div class="tools">
-      <button id="speed" title="Playback speed">1.0×</button>
+      <button id="speed" title="Playback speed" aria-haspopup="true">1×</button>
       <input type="hidden" id="voice" value="af_heart">
       <button class="voice-btn" data-for="voice" title="Change voice"><b>Heart</b></button>
       <a id="export" href="#" title="Download the whole document as one MP3">Export</a>
@@ -79,6 +83,12 @@
 <div id="voice-pop" class="pop" hidden>
   <div class="pop-head"><span>Choose a voice</span><button class="icon small" id="voice-close" aria-label="Close">&#10005;</button></div>
   <div id="voice-list"></div>
+</div>
+<div id="speed-pop" class="pop speed-pop" hidden>
+  <div class="pop-head"><span>Speed</span><span id="speed-value">1×</span></div>
+  <input type="range" id="speed-range" min="0.5" max="3" step="0.05" value="1" aria-label="Playback speed">
+  <div class="chips" id="speed-chips"></div>
+  <p class="muted hint">Press [ and ] while listening to step by 0.1.</p>
 </div>
 <div id="scrim" hidden></div>
 

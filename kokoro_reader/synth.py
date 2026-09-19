@@ -106,7 +106,7 @@ class Worker:
         candidates: list[tuple[str, int]] = []
         if self._focus is not None:
             candidates.append(self._focus)
-        candidates += [(m.id, m.position["segment"]) for m in store.list_docs()]
+        candidates += [(m.id, m.position["segment"]) for m in store.list_docs(include_ephemeral=True)]
         for doc_id, start in candidates:
             try:
                 meta = store.load_meta(doc_id)
