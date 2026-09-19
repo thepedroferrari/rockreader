@@ -1,0 +1,10 @@
+.venv/
+__pycache__/
+*.wav
+*.mp3
+*.pcm
+out/
+data/
+logs/
+.env
+.playwright-mcp/

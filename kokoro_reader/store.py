@@ -1,0 +1,82 @@
+"""On-disk storage: one folder per document with its segments, audio cache and reading position."""
+
+from __future__ import annotations
+
+import json
+import os
+import secrets
+import time
+from dataclasses import asdict, dataclass, field
+from pathlib import Path
+
+DATA_DIR = Path(os.environ.get("KOKORO_DATA_DIR", Path(__file__).resolve().parent.parent / "data"))
+DOCS_DIR = DATA_DIR / "docs"
+
+
+@dataclass
+class DocMeta:
+    id: str
+    title: str
+    filename: str
+    created: float
+    segment_count: int
+    voice: str = "af_heart"
+    position: dict = field(default_factory=lambda: {"segment": 0, "offset": 0.0})
+
+
+def doc_dir(doc_id: str) -> Path:
+    if not doc_id.isalnum():
+        raise ValueError("bad id")
+    return DOCS_DIR / doc_id
+
+
+def audio_path(doc_id: str, voice: str, index: int) -> Path:
+    return doc_dir(doc_id) / "audio" / voice / f"{index:05d}.wav"
+
+
+def create_doc(title: str, filename: str, segments: list[str], source: Path, voice: str) -> DocMeta:
+    doc_id = secrets.token_hex(6)
+    d = doc_dir(doc_id)
+    (d / "audio").mkdir(parents=True)
+    (d / f"source{source.suffix}").write_bytes(source.read_bytes())
+    (d / "segments.json").write_text(json.dumps(segments, ensure_ascii=False))
+    meta = DocMeta(id=doc_id, title=title, filename=filename, created=time.time(), segment_count=len(segments), voice=voice)
+    save_meta(meta)
+    return meta
+
+
+def save_meta(meta: DocMeta) -> None:
+    tmp = doc_dir(meta.id) / "meta.json.tmp"
+    tmp.write_text(json.dumps(asdict(meta)))
+    tmp.replace(doc_dir(meta.id) / "meta.json")
+
+
+def load_meta(doc_id: str) -> DocMeta:
+    return DocMeta(**json.loads((doc_dir(doc_id) / "meta.json").read_text()))
+
+
+def load_segments(doc_id: str) -> list[str]:
+    return json.loads((doc_dir(doc_id) / "segments.json").read_text())
+
+
+def list_docs() -> list[DocMeta]:
+    if not DOCS_DIR.exists():
+        return []
+    metas = []
+    for d in DOCS_DIR.iterdir():
+        if (d / "meta.json").exists():
+            metas.append(load_meta(d.name))
+    return sorted(metas, key=lambda m: m.created, reverse=True)
+
+
+def delete_doc(doc_id: str) -> None:
+    import shutil
+
+    shutil.rmtree(doc_dir(doc_id), ignore_errors=True)
+
+
+def generated_indices(doc_id: str, voice: str) -> set[int]:
+    folder = doc_dir(doc_id) / "audio" / voice
+    if not folder.exists():
+        return set()
+    return {int(p.stem) for p in folder.glob("*.wav")}
