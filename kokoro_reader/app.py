@@ -222,25 +222,37 @@ def api_audio(doc_id: str, index: int):
     return FileResponse(p, media_type="audio/wav", headers={"Cache-Control": "no-cache"})
 
 
+# Export formats. Opus is the default: for speech it is about four times smaller than MP3 at
+# the same clarity, and every current browser plays it (Safari since 18.4).
+EXPORT_FORMATS = {
+    "ogg": (["-c:a", "libopus", "-b:a", "24k", "-application", "voip"], "audio/ogg"),
+    "m4a": (["-c:a", "aac", "-b:a", "48k"], "audio/mp4"),
+    "mp3": (["-c:a", "libmp3lame", "-b:a", "64k"], "audio/mpeg"),
+}
+
+
 @app.get("/api/docs/{doc_id}/export")
-def api_export(doc_id: str):
-    """Concatenate every generated segment into one MP3 with ffmpeg."""
+def api_export(doc_id: str, format: str = "ogg"):
+    """Concatenate every generated segment into one file with ffmpeg. format: ogg (Opus), m4a (AAC) or mp3."""
+    if format not in EXPORT_FORMATS:
+        raise HTTPException(400, f"format must be one of {', '.join(EXPORT_FORMATS)}")
     meta = store.load_meta(doc_id)
     done = store.generated_indices(doc_id, meta.voice)
     if len(done) < meta.segment_count:
         raise HTTPException(409, f"only {len(done)}/{meta.segment_count} segments generated")
     if not shutil.which("ffmpeg"):
         raise HTTPException(500, "ffmpeg not installed (brew install ffmpeg)")
-    out = store.doc_dir(doc_id) / f"{meta.voice}.mp3"
+    codec_args, media_type = EXPORT_FORMATS[format]
+    out = store.doc_dir(doc_id) / f"{meta.voice}.{format}"
     if not out.exists():
         listing = store.doc_dir(doc_id) / "concat.txt"
         listing.write_text("".join(f"file '{store.audio_path(doc_id, meta.voice, i)}'\n" for i in range(meta.segment_count)))
         subprocess.run(
-            ["ffmpeg", "-y", "-loglevel", "error", "-f", "concat", "-safe", "0", "-i", str(listing), "-b:a", "96k", str(out)],
+            ["ffmpeg", "-y", "-loglevel", "error", "-f", "concat", "-safe", "0", "-i", str(listing), "-ac", "1", *codec_args, str(out)],
             check=True,
         )
     safe = "".join(c if c.isalnum() or c in " -_" else "_" for c in meta.title)[:80] or "audiobook"
-    return FileResponse(out, media_type="audio/mpeg", filename=f"{safe}.mp3")
+    return FileResponse(out, media_type=media_type, filename=f"{safe}.{format}")
 
 
 @app.get("/api/config")

@@ -4,7 +4,7 @@ RockReader is a local text-to-speech reader for long documents, built for Apple 
 
 It also exposes a plain speech endpoint (`POST /v1/audio/speech`) that streams audio for any text you send it.
 
-**Hear it:** [readme.mp3](docs/readme.mp3) is this README, read by the Heart voice and exported from the app (5 min, 4 MB).
+**Hear it:** [readme.ogg](https://github.com/thepedroferrari/rockreader/releases/download/v0.1.0/readme.ogg) is this README, read by the Heart voice and exported from the app (5 min, under 1 MB as Opus).
 
 <p align="center"><img src="docs/reader.png" width="720" alt="Reading a paper: the current paragraph is highlighted, the track above the controls shows generated paragraphs, and the readout shows time left."></p>
 
@@ -46,7 +46,7 @@ Three ways to add something to the library:
 Text is cleaned (hyphen joins, page numbers, citation brackets, URLs, emails removed) and split into paragraphs of at most ~700 characters.
 - Click any paragraph to jump there, or click the track above the controls, where each paragraph is drawn to scale and shaded once its audio is ready. The readout shows the paragraph number, time within it, and an estimate of listening time left at the current voice and speed. Speed opens a panel with a slider from 0.5× to 3×, preset chips, and `[` / `]` keys to step by 0.1. Keyboard: space play/pause, left/right 15 s, up/down paragraph, escape closes the voice picker. Headphone and media keys work through the browser's media controls.
 - Voices are grouped by accent and gender and labelled with the official quality grade plus three measured character words (pitch, pitch movement, pace), e.g. "Onyx · deep, lively, measured · grade D". The play button next to the picker plays a sample sentence. Voice can be changed per document mid-listen; audio regenerates for the new voice, the old one stays cached.
-- Export MP3 becomes active once every paragraph is generated (needs `ffmpeg`, installed by `install.sh`).
+- Export becomes active once every paragraph is generated (needs `ffmpeg`, installed by `install.sh`). The file is Opus in an Ogg container at 24 kbps: about 10 MB per hour of speech, a quarter of the size of MP3 at the same clarity, and playable in every current browser. `?format=mp3` or `?format=m4a` on the export URL gives those instead.
 - Position is saved on the server every few seconds, so you can continue on another device.
 
 Known limit: PDF footnotes and figure captions land wherever the PDF stores them, sometimes inside a nearby paragraph. Click past them.

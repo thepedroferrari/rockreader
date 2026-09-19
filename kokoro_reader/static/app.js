@@ -237,7 +237,7 @@ async function openDoc(id) {
   $("keep").hidden = !doc.meta.ephemeral;
   setVoiceInput("voice", doc.meta.voice);
   $("text").innerHTML = doc.segments.map((s, i) => `<p data-i="${i}">${escape(s)}</p>`).join("");
-  $("export").href = `/api/docs/${id}/export`;
+  $("export").href = `/api/docs/${id}/export?format=ogg`;
   segStarts = []; totalChars = 0;
   for (const s of doc.segments) { segStarts.push(totalChars); totalChars += s.length; }
   $("track-segments").innerHTML = doc.segments.map((s, i) => `<i data-i="${i}" style="--w:${s.length}"></i>`).join("");
@@ -401,7 +401,7 @@ async function refreshStatus() {
   }
   const complete = generated.size >= st.total;
   $("export").classList.toggle("disabled", !complete);
-  $("export").title = complete ? "Download the whole document as one MP3" : `Export is ready once every paragraph is generated (${generated.size} of ${st.total})`;
+  $("export").title = complete ? "Download the whole document as one Opus audio file" : `Export is ready once every paragraph is generated (${generated.size} of ${st.total})`;
   if (waitingFor && generated.has(waitingFor.i)) {
     const w = waitingFor; waitingFor = null;
     loadSegment(w.i, w.autoplay, w.offset);
