@@ -9,7 +9,7 @@
 </head>
 <body>
 <header>
-  <button id="back" class="icon" hidden title="Library">&#8592;</button>
+  <button id="back" class="icon" hidden title="Library" aria-label="Back to library">&#8592;</button>
   <h1 id="title">RockReader</h1>
   <span id="status" class="muted"></span>
 </header>
@@ -36,8 +36,8 @@
       <p class="muted hint">PDF and EPUB links download directly. Web pages get their article text extracted. Pages behind a login need the browser extension.</p>
     </div>
     <div class="row">
-      <label>Voice <select id="upload-voice"></select></label>
-      <button type="button" class="preview" data-for="upload-voice" title="Hear a sample">&#9654; Preview</button>
+      <input type="hidden" id="upload-voice" value="af_heart">
+      <button type="button" class="voice-btn" data-for="upload-voice">Voice: <b>Heart</b></button>
       <button type="submit" id="upload-btn" disabled>Add to library</button>
     </div>
   </form>
@@ -49,25 +49,38 @@
 </main>
 
 <footer id="player" hidden>
-  <div id="genbar"><div id="genfill"></div></div>
-  <div class="controls">
-    <button class="icon" id="prev" title="Previous paragraph">&#9198;</button>
-    <button class="icon" id="rew" title="Back 15 s">&#8634;</button>
-    <button class="icon big" id="play" title="Play / pause">&#9654;</button>
-    <button class="icon" id="ffw" title="Forward 15 s">&#8635;</button>
-    <button class="icon" id="next" title="Next paragraph">&#9197;</button>
+  <div id="track" title="Click to jump" aria-label="Document position">
+    <div id="track-segments"></div>
+    <div id="track-pos"></div>
   </div>
-  <div class="row small">
-    <span id="counter"></span>
-    <label>Speed <select id="speed">
-      <option>0.8</option><option selected>1</option><option>1.1</option><option>1.25</option><option>1.5</option><option>1.75</option><option>2</option>
-    </select></label>
-    <label>Voice <select id="voice"></select></label>
-    <button type="button" class="preview" data-for="voice" title="Hear a sample">&#9654;</button>
-    <a id="export" href="#" title="Download the whole document as one MP3 (once fully generated)">Export MP3</a>
+  <div class="deck">
+    <div class="readout">
+      <span id="counter">Paragraph 1 of 1</span>
+      <span id="clock">0:00 / 0:00</span>
+      <span id="remaining"></span>
+    </div>
+    <div class="controls">
+      <button class="icon" id="prev" title="Previous paragraph (↑)" aria-label="Previous paragraph">&#9198;</button>
+      <button class="icon" id="rew" title="Back 15 seconds (←)" aria-label="Back 15 seconds">15</button>
+      <button class="icon big" id="play" title="Play / pause (space)" aria-label="Play"><span>&#9654;</span></button>
+      <button class="icon" id="ffw" title="Forward 15 seconds (→)" aria-label="Forward 15 seconds">15</button>
+      <button class="icon" id="next" title="Next paragraph (↓)" aria-label="Next paragraph">&#9197;</button>
+    </div>
+    <div class="tools">
+      <button id="speed" title="Playback speed">1.0×</button>
+      <input type="hidden" id="voice" value="af_heart">
+      <button class="voice-btn" data-for="voice" title="Change voice"><b>Heart</b></button>
+      <a id="export" href="#" title="Download the whole document as one MP3">Export</a>
+    </div>
   </div>
   <audio id="audio" preload="auto"></audio>
 </footer>
+
+<div id="voice-pop" class="pop" hidden>
+  <div class="pop-head"><span>Choose a voice</span><button class="icon small" id="voice-close" aria-label="Close">&#10005;</button></div>
+  <div id="voice-list"></div>
+</div>
+<div id="scrim" hidden></div>
 
 <script src="app.js"></script>
 </body>

@@ -36,7 +36,7 @@ Three ways to add something to the library:
 - **URL**: PDF and EPUB links download directly (arXiv abstract links are resolved to the PDF and titled from the arXiv API). Web pages get their article body extracted with trafilatura, the same idea as a browser's reader view. Pages behind a login or that only render with JavaScript need the extension below.
 
 Text is cleaned (hyphen joins, page numbers, citation brackets, URLs, emails removed) and split into paragraphs of at most ~700 characters.
-- Click any paragraph to jump there. Keyboard: space play/pause, left/right 15 s, up/down paragraph. Headphone and media keys work through the browser's media controls.
+- Click any paragraph to jump there, or click the track above the controls, where each paragraph is drawn to scale and shaded once its audio is ready. The readout shows the paragraph number, time within it, and an estimate of listening time left at the current voice and speed. Speed cycles with one tap. Keyboard: space play/pause, left/right 15 s, up/down paragraph, escape closes the voice picker. Headphone and media keys work through the browser's media controls.
 - Voices are grouped by accent and gender and labelled with the official quality grade plus three measured character words (pitch, pitch movement, pace), e.g. "Onyx · deep, lively, measured · grade D". The play button next to the picker plays a sample sentence. Voice can be changed per document mid-listen; audio regenerates for the new voice, the old one stays cached.
 - Export MP3 becomes active once every paragraph is generated (needs `ffmpeg`, installed by `install.sh`).
 - Position is saved on the server every few seconds, so you can continue on another device.
