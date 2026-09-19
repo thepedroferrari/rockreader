@@ -5,7 +5,9 @@ async function loadVoices(server, selected) {
   const sel = $("voice");
   try {
     const voices = await (await fetch(`${server.replace(/\/+$/, "")}/api/voices`)).json();
-    sel.innerHTML = voices.map((v) => `<option ${v === selected ? "selected" : ""}>${v}</option>`).join("");
+    sel.innerHTML = voices.map((v) =>
+      `<option value="${v.id}" ${v.id === selected ? "selected" : ""}>${v.name} · ${v.language}, ${v.gender} · ${v.character.join(", ")}${v.grade ? " · " + v.grade : ""}</option>`
+    ).join("");
     $("status").textContent = "";
   } catch {
     sel.innerHTML = `<option>${selected}</option>`;

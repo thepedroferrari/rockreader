@@ -1,0 +1,924 @@
+[
+ {
+  "id": "af_alloy",
+  "name": "Alloy",
+  "language": "American English",
+  "lang_code": "a",
+  "gender": "female",
+  "grade": "C",
+  "character": [
+   "deep",
+   "steady",
+   "measured"
+  ],
+  "metrics": {
+   "pitch_hz": 147,
+   "pitch_spread": 0.167,
+   "words_per_sec": 2.48
+  },
+  "available": true
+ },
+ {
+  "id": "af_aoede",
+  "name": "Aoede",
+  "language": "American English",
+  "lang_code": "a",
+  "gender": "female",
+  "grade": "C+",
+  "character": [
+   "low",
+   "expressive",
+   "measured"
+  ],
+  "metrics": {
+   "pitch_hz": 180,
+   "pitch_spread": 0.218,
+   "words_per_sec": 2.46
+  },
+  "available": true
+ },
+ {
+  "id": "af_bella",
+  "name": "Bella",
+  "language": "American English",
+  "lang_code": "a",
+  "gender": "female",
+  "grade": "A-",
+  "character": [
+   "mid-range",
+   "steady",
+   "measured"
+  ],
+  "metrics": {
+   "pitch_hz": 205,
+   "pitch_spread": 0.142,
+   "words_per_sec": 2.31
+  },
+  "available": true
+ },
+ {
+  "id": "af_heart",
+  "name": "Heart",
+  "language": "American English",
+  "lang_code": "a",
+  "gender": "female",
+  "grade": "A",
+  "character": [
+   "mid-range",
+   "steady",
+   "measured"
+  ],
+  "metrics": {
+   "pitch_hz": 202,
+   "pitch_spread": 0.188,
+   "words_per_sec": 2.43
+  },
+  "available": true
+ },
+ {
+  "id": "af_jessica",
+  "name": "Jessica",
+  "language": "American English",
+  "lang_code": "a",
+  "gender": "female",
+  "grade": "D",
+  "character": [
+   "mid-range",
+   "steady",
+   "measured"
+  ],
+  "metrics": {
+   "pitch_hz": 214,
+   "pitch_spread": 0.197,
+   "words_per_sec": 2.7
+  },
+  "available": true
+ },
+ {
+  "id": "af_kore",
+  "name": "Kore",
+  "language": "American English",
+  "lang_code": "a",
+  "gender": "female",
+  "grade": "C+",
+  "character": [
+   "deep",
+   "lively",
+   "measured"
+  ],
+  "metrics": {
+   "pitch_hz": 155,
+   "pitch_spread": 0.299,
+   "words_per_sec": 2.4
+  },
+  "available": true
+ },
+ {
+  "id": "af_nicole",
+  "name": "Nicole",
+  "language": "American English",
+  "lang_code": "a",
+  "gender": "female",
+  "grade": "B-",
+  "character": [
+   "deep",
+   "steady",
+   "slow"
+  ],
+  "metrics": {
+   "pitch_hz": 161,
+   "pitch_spread": 0.161,
+   "words_per_sec": 1.6
+  },
+  "available": true
+ },
+ {
+  "id": "af_nova",
+  "name": "Nova",
+  "language": "American English",
+  "lang_code": "a",
+  "gender": "female",
+  "grade": "C",
+  "character": [
+   "deep",
+   "steady",
+   "measured"
+  ],
+  "metrics": {
+   "pitch_hz": 162,
+   "pitch_spread": 0.177,
+   "words_per_sec": 2.5
+  },
+  "available": true
+ },
+ {
+  "id": "af_river",
+  "name": "River",
+  "language": "American English",
+  "lang_code": "a",
+  "gender": "female",
+  "grade": "D",
+  "character": [
+   "low",
+   "steady",
+   "measured"
+  ],
+  "metrics": {
+   "pitch_hz": 182,
+   "pitch_spread": 0.19,
+   "words_per_sec": 2.69
+  },
+  "available": true
+ },
+ {
+  "id": "af_sarah",
+  "name": "Sarah",
+  "language": "American English",
+  "lang_code": "a",
+  "gender": "female",
+  "grade": "C+",
+  "character": [
+   "mid-range",
+   "expressive",
+   "slow"
+  ],
+  "metrics": {
+   "pitch_hz": 195,
+   "pitch_spread": 0.253,
+   "words_per_sec": 2.29
+  },
+  "available": true
+ },
+ {
+  "id": "af_sky",
+  "name": "Sky",
+  "language": "American English",
+  "lang_code": "a",
+  "gender": "female",
+  "grade": "C-",
+  "character": [
+   "deep",
+   "expressive",
+   "measured"
+  ],
+  "metrics": {
+   "pitch_hz": 160,
+   "pitch_spread": 0.228,
+   "words_per_sec": 2.39
+  },
+  "available": true
+ },
+ {
+  "id": "am_adam",
+  "name": "Adam",
+  "language": "American English",
+  "lang_code": "a",
+  "gender": "male",
+  "grade": "F+",
+  "character": [
+   "low",
+   "expressive",
+   "measured"
+  ],
+  "metrics": {
+   "pitch_hz": 122,
+   "pitch_spread": 0.202,
+   "words_per_sec": 2.42
+  },
+  "available": true
+ },
+ {
+  "id": "am_echo",
+  "name": "Echo",
+  "language": "American English",
+  "lang_code": "a",
+  "gender": "male",
+  "grade": "D",
+  "character": [
+   "low",
+   "expressive",
+   "measured"
+  ],
+  "metrics": {
+   "pitch_hz": 112,
+   "pitch_spread": 0.211,
+   "words_per_sec": 2.48
+  },
+  "available": true
+ },
+ {
+  "id": "am_eric",
+  "name": "Eric",
+  "language": "American English",
+  "lang_code": "a",
+  "gender": "male",
+  "grade": "D",
+  "character": [
+   "mid-range",
+   "steady",
+   "measured"
+  ],
+  "metrics": {
+   "pitch_hz": 160,
+   "pitch_spread": 0.195,
+   "words_per_sec": 2.61
+  },
+  "available": true
+ },
+ {
+  "id": "am_fenrir",
+  "name": "Fenrir",
+  "language": "American English",
+  "lang_code": "a",
+  "gender": "male",
+  "grade": "C+",
+  "character": [
+   "mid-range",
+   "lively",
+   "measured"
+  ],
+  "metrics": {
+   "pitch_hz": 148,
+   "pitch_spread": 0.293,
+   "words_per_sec": 2.46
+  },
+  "available": true
+ },
+ {
+  "id": "am_liam",
+  "name": "Liam",
+  "language": "American English",
+  "lang_code": "a",
+  "gender": "male",
+  "grade": "D",
+  "character": [
+   "low",
+   "expressive",
+   "measured"
+  ],
+  "metrics": {
+   "pitch_hz": 130,
+   "pitch_spread": 0.262,
+   "words_per_sec": 2.58
+  },
+  "available": true
+ },
+ {
+  "id": "am_michael",
+  "name": "Michael",
+  "language": "American English",
+  "lang_code": "a",
+  "gender": "male",
+  "grade": "C+",
+  "character": [
+   "low",
+   "steady",
+   "slow"
+  ],
+  "metrics": {
+   "pitch_hz": 117,
+   "pitch_spread": 0.195,
+   "words_per_sec": 2.14
+  },
+  "available": true
+ },
+ {
+  "id": "am_onyx",
+  "name": "Onyx",
+  "language": "American English",
+  "lang_code": "a",
+  "gender": "male",
+  "grade": "D",
+  "character": [
+   "deep",
+   "lively",
+   "measured"
+  ],
+  "metrics": {
+   "pitch_hz": 87,
+   "pitch_spread": 0.34,
+   "words_per_sec": 2.48
+  },
+  "available": true
+ },
+ {
+  "id": "am_puck",
+  "name": "Puck",
+  "language": "American English",
+  "lang_code": "a",
+  "gender": "male",
+  "grade": "C+",
+  "character": [
+   "low",
+   "lively",
+   "measured"
+  ],
+  "metrics": {
+   "pitch_hz": 115,
+   "pitch_spread": 0.467,
+   "words_per_sec": 2.5
+  },
+  "available": true
+ },
+ {
+  "id": "am_santa",
+  "name": "Santa",
+  "language": "American English",
+  "lang_code": "a",
+  "gender": "male",
+  "grade": "D-",
+  "character": [
+   "mid-range",
+   "lively",
+   "measured"
+  ],
+  "metrics": {
+   "pitch_hz": 160,
+   "pitch_spread": 0.363,
+   "words_per_sec": 2.35
+  },
+  "available": true
+ },
+ {
+  "id": "bf_alice",
+  "name": "Alice",
+  "language": "British English",
+  "lang_code": "b",
+  "gender": "female",
+  "grade": "D",
+  "character": [
+   "mid-range",
+   "expressive",
+   "measured"
+  ],
+  "metrics": {
+   "pitch_hz": 209,
+   "pitch_spread": 0.23,
+   "words_per_sec": 2.38
+  },
+  "available": true
+ },
+ {
+  "id": "bf_emma",
+  "name": "Emma",
+  "language": "British English",
+  "lang_code": "b",
+  "gender": "female",
+  "grade": "B-",
+  "character": [
+   "low",
+   "steady",
+   "measured"
+  ],
+  "metrics": {
+   "pitch_hz": 188,
+   "pitch_spread": 0.142,
+   "words_per_sec": 2.47
+  },
+  "available": true
+ },
+ {
+  "id": "bf_isabella",
+  "name": "Isabella",
+  "language": "British English",
+  "lang_code": "b",
+  "gender": "female",
+  "grade": "C",
+  "character": [
+   "mid-range",
+   "steady",
+   "measured"
+  ],
+  "metrics": {
+   "pitch_hz": 207,
+   "pitch_spread": 0.147,
+   "words_per_sec": 2.39
+  },
+  "available": true
+ },
+ {
+  "id": "bf_lily",
+  "name": "Lily",
+  "language": "British English",
+  "lang_code": "b",
+  "gender": "female",
+  "grade": "D",
+  "character": [
+   "mid-range",
+   "expressive",
+   "measured"
+  ],
+  "metrics": {
+   "pitch_hz": 198,
+   "pitch_spread": 0.211,
+   "words_per_sec": 2.41
+  },
+  "available": true
+ },
+ {
+  "id": "bm_daniel",
+  "name": "Daniel",
+  "language": "British English",
+  "lang_code": "b",
+  "gender": "male",
+  "grade": "D",
+  "character": [
+   "low",
+   "steady",
+   "measured"
+  ],
+  "metrics": {
+   "pitch_hz": 126,
+   "pitch_spread": 0.149,
+   "words_per_sec": 2.5
+  },
+  "available": true
+ },
+ {
+  "id": "bm_fable",
+  "name": "Fable",
+  "language": "British English",
+  "lang_code": "b",
+  "gender": "male",
+  "grade": "C",
+  "character": [
+   "low",
+   "lively",
+   "measured"
+  ],
+  "metrics": {
+   "pitch_hz": 128,
+   "pitch_spread": 0.307,
+   "words_per_sec": 2.49
+  },
+  "available": true
+ },
+ {
+  "id": "bm_george",
+  "name": "George",
+  "language": "British English",
+  "lang_code": "b",
+  "gender": "male",
+  "grade": "C",
+  "character": [
+   "mid-range",
+   "steady",
+   "slow"
+  ],
+  "metrics": {
+   "pitch_hz": 140,
+   "pitch_spread": 0.177,
+   "words_per_sec": 2.17
+  },
+  "available": true
+ },
+ {
+  "id": "bm_lewis",
+  "name": "Lewis",
+  "language": "British English",
+  "lang_code": "b",
+  "gender": "male",
+  "grade": "D+",
+  "character": [
+   "deep",
+   "expressive",
+   "slow"
+  ],
+  "metrics": {
+   "pitch_hz": 98,
+   "pitch_spread": 0.207,
+   "words_per_sec": 2.25
+  },
+  "available": true
+ },
+ {
+  "id": "ef_dora",
+  "name": "Dora",
+  "language": "Spanish",
+  "lang_code": "e",
+  "gender": "female",
+  "grade": null,
+  "character": [
+   "low",
+   "steady",
+   "measured"
+  ],
+  "metrics": {
+   "pitch_hz": 170,
+   "pitch_spread": 0.181,
+   "words_per_sec": 2.46
+  },
+  "available": true
+ },
+ {
+  "id": "em_alex",
+  "name": "Alex",
+  "language": "Spanish",
+  "lang_code": "e",
+  "gender": "male",
+  "grade": null,
+  "character": [
+   "low",
+   "expressive",
+   "measured"
+  ],
+  "metrics": {
+   "pitch_hz": 132,
+   "pitch_spread": 0.209,
+   "words_per_sec": 2.41
+  },
+  "available": true
+ },
+ {
+  "id": "em_santa",
+  "name": "Santa",
+  "language": "Spanish",
+  "lang_code": "e",
+  "gender": "male",
+  "grade": null,
+  "character": [
+   "mid-range",
+   "lively",
+   "measured"
+  ],
+  "metrics": {
+   "pitch_hz": 142,
+   "pitch_spread": 0.327,
+   "words_per_sec": 2.42
+  },
+  "available": true
+ },
+ {
+  "id": "ff_siwis",
+  "name": "Siwis",
+  "language": "French",
+  "lang_code": "f",
+  "gender": "female",
+  "grade": "B-",
+  "character": [
+   "mid-range",
+   "steady",
+   "measured"
+  ],
+  "metrics": {
+   "pitch_hz": 203,
+   "pitch_spread": 0.145,
+   "words_per_sec": 2.64
+  },
+  "available": true
+ },
+ {
+  "id": "hf_alpha",
+  "name": "Alpha",
+  "language": "Hindi",
+  "lang_code": "h",
+  "gender": "female",
+  "grade": "C",
+  "character": [
+   "mid-range",
+   "steady",
+   "slow"
+  ],
+  "metrics": {
+   "pitch_hz": 199,
+   "pitch_spread": 0.192,
+   "words_per_sec": 2.16
+  },
+  "available": true
+ },
+ {
+  "id": "hf_beta",
+  "name": "Beta",
+  "language": "Hindi",
+  "lang_code": "h",
+  "gender": "female",
+  "grade": "C",
+  "character": [
+   "low",
+   "expressive",
+   "measured"
+  ],
+  "metrics": {
+   "pitch_hz": 181,
+   "pitch_spread": 0.227,
+   "words_per_sec": 2.32
+  },
+  "available": true
+ },
+ {
+  "id": "hm_omega",
+  "name": "Omega",
+  "language": "Hindi",
+  "lang_code": "h",
+  "gender": "male",
+  "grade": "C",
+  "character": [
+   "low",
+   "expressive",
+   "slow"
+  ],
+  "metrics": {
+   "pitch_hz": 133,
+   "pitch_spread": 0.26,
+   "words_per_sec": 2.08
+  },
+  "available": true
+ },
+ {
+  "id": "hm_psi",
+  "name": "Psi",
+  "language": "Hindi",
+  "lang_code": "h",
+  "gender": "male",
+  "grade": "C",
+  "character": [
+   "mid-range",
+   "expressive",
+   "slow"
+  ],
+  "metrics": {
+   "pitch_hz": 139,
+   "pitch_spread": 0.224,
+   "words_per_sec": 2.09
+  },
+  "available": true
+ },
+ {
+  "id": "if_sara",
+  "name": "Sara",
+  "language": "Italian",
+  "lang_code": "i",
+  "gender": "female",
+  "grade": "C",
+  "character": [
+   "mid-range",
+   "steady",
+   "measured"
+  ],
+  "metrics": {
+   "pitch_hz": 208,
+   "pitch_spread": 0.156,
+   "words_per_sec": 2.51
+  },
+  "available": true
+ },
+ {
+  "id": "im_nicola",
+  "name": "Nicola",
+  "language": "Italian",
+  "lang_code": "i",
+  "gender": "male",
+  "grade": "C",
+  "character": [
+   "deep",
+   "steady",
+   "slow"
+  ],
+  "metrics": {
+   "pitch_hz": 84,
+   "pitch_spread": 0.186,
+   "words_per_sec": 2.25
+  },
+  "available": true
+ },
+ {
+  "id": "jf_alpha",
+  "name": "Alpha",
+  "language": "Japanese",
+  "lang_code": "j",
+  "gender": "female",
+  "grade": "C+",
+  "character": [],
+  "metrics": {},
+  "available": false
+ },
+ {
+  "id": "jf_gongitsune",
+  "name": "Gongitsune",
+  "language": "Japanese",
+  "lang_code": "j",
+  "gender": "female",
+  "grade": "C",
+  "character": [],
+  "metrics": {},
+  "available": false
+ },
+ {
+  "id": "jf_nezumi",
+  "name": "Nezumi",
+  "language": "Japanese",
+  "lang_code": "j",
+  "gender": "female",
+  "grade": "C-",
+  "character": [],
+  "metrics": {},
+  "available": false
+ },
+ {
+  "id": "jf_tebukuro",
+  "name": "Tebukuro",
+  "language": "Japanese",
+  "lang_code": "j",
+  "gender": "female",
+  "grade": "C",
+  "character": [],
+  "metrics": {},
+  "available": false
+ },
+ {
+  "id": "jm_kumo",
+  "name": "Kumo",
+  "language": "Japanese",
+  "lang_code": "j",
+  "gender": "male",
+  "grade": "C-",
+  "character": [],
+  "metrics": {},
+  "available": false
+ },
+ {
+  "id": "pf_dora",
+  "name": "Dora",
+  "language": "Portuguese",
+  "lang_code": "p",
+  "gender": "female",
+  "grade": null,
+  "character": [
+   "low",
+   "steady",
+   "measured"
+  ],
+  "metrics": {
+   "pitch_hz": 173,
+   "pitch_spread": 0.172,
+   "words_per_sec": 2.41
+  },
+  "available": true
+ },
+ {
+  "id": "pm_alex",
+  "name": "Alex",
+  "language": "Portuguese",
+  "lang_code": "p",
+  "gender": "male",
+  "grade": null,
+  "character": [
+   "mid-range",
+   "steady",
+   "measured"
+  ],
+  "metrics": {
+   "pitch_hz": 136,
+   "pitch_spread": 0.18,
+   "words_per_sec": 2.4
+  },
+  "available": true
+ },
+ {
+  "id": "pm_santa",
+  "name": "Santa",
+  "language": "Portuguese",
+  "lang_code": "p",
+  "gender": "male",
+  "grade": null,
+  "character": [
+   "mid-range",
+   "expressive",
+   "measured"
+  ],
+  "metrics": {
+   "pitch_hz": 144,
+   "pitch_spread": 0.223,
+   "words_per_sec": 2.38
+  },
+  "available": true
+ },
+ {
+  "id": "zf_xiaobei",
+  "name": "Xiaobei",
+  "language": "Mandarin",
+  "lang_code": "z",
+  "gender": "female",
+  "grade": "D",
+  "character": [],
+  "metrics": {},
+  "available": false
+ },
+ {
+  "id": "zf_xiaoni",
+  "name": "Xiaoni",
+  "language": "Mandarin",
+  "lang_code": "z",
+  "gender": "female",
+  "grade": "D",
+  "character": [],
+  "metrics": {},
+  "available": false
+ },
+ {
+  "id": "zf_xiaoxiao",
+  "name": "Xiaoxiao",
+  "language": "Mandarin",
+  "lang_code": "z",
+  "gender": "female",
+  "grade": "D",
+  "character": [],
+  "metrics": {},
+  "available": false
+ },
+ {
+  "id": "zf_xiaoyi",
+  "name": "Xiaoyi",
+  "language": "Mandarin",
+  "lang_code": "z",
+  "gender": "female",
+  "grade": "D",
+  "character": [],
+  "metrics": {},
+  "available": false
+ },
+ {
+  "id": "zm_yunjian",
+  "name": "Yunjian",
+  "language": "Mandarin",
+  "lang_code": "z",
+  "gender": "male",
+  "grade": "D",
+  "character": [],
+  "metrics": {},
+  "available": false
+ },
+ {
+  "id": "zm_yunxi",
+  "name": "Yunxi",
+  "language": "Mandarin",
+  "lang_code": "z",
+  "gender": "male",
+  "grade": "D",
+  "character": [],
+  "metrics": {},
+  "available": false
+ },
+ {
+  "id": "zm_yunxia",
+  "name": "Yunxia",
+  "language": "Mandarin",
+  "lang_code": "z",
+  "gender": "male",
+  "grade": "D",
+  "character": [],
+  "metrics": {},
+  "available": false
+ },
+ {
+  "id": "zm_yunyang",
+  "name": "Yunyang",
+  "language": "Mandarin",
+  "lang_code": "z",
+  "gender": "male",
+  "grade": "D",
+  "character": [],
+  "metrics": {},
+  "available": false
+ }
+]

@@ -5,12 +5,17 @@ from __future__ import annotations
 import json
 import os
 import secrets
+import threading
 import time
 from dataclasses import asdict, dataclass, field
 from pathlib import Path
 
 DATA_DIR = Path(os.environ.get("KOKORO_DATA_DIR", Path(__file__).resolve().parent.parent / "data"))
 DOCS_DIR = DATA_DIR / "docs"
+
+# Guards every read-modify-write of meta.json. Concurrent position and voice
+# updates from the UI otherwise interleave their writes and corrupt the file.
+META_LOCK = threading.RLock()
 
 
 @dataclass
@@ -57,13 +62,25 @@ def create_text_doc(title: str, source: str, segments: list[str], text: str, voi
 
 
 def save_meta(meta: DocMeta) -> None:
-    tmp = doc_dir(meta.id) / "meta.json.tmp"
-    tmp.write_text(json.dumps(asdict(meta)))
-    tmp.replace(doc_dir(meta.id) / "meta.json")
+    with META_LOCK:
+        tmp = doc_dir(meta.id) / f"meta.{secrets.token_hex(4)}.tmp"
+        tmp.write_text(json.dumps(asdict(meta)))
+        tmp.replace(doc_dir(meta.id) / "meta.json")
 
 
 def load_meta(doc_id: str) -> DocMeta:
-    return DocMeta(**json.loads((doc_dir(doc_id) / "meta.json").read_text()))
+    with META_LOCK:
+        return DocMeta(**json.loads((doc_dir(doc_id) / "meta.json").read_text()))
+
+
+def update_meta(doc_id: str, **changes) -> DocMeta:
+    """Atomic read-modify-write."""
+    with META_LOCK:
+        meta = load_meta(doc_id)
+        for k, v in changes.items():
+            setattr(meta, k, v)
+        save_meta(meta)
+        return meta
 
 
 def load_segments(doc_id: str) -> list[str]:
@@ -76,7 +93,10 @@ def list_docs() -> list[DocMeta]:
     metas = []
     for d in DOCS_DIR.iterdir():
         if (d / "meta.json").exists():
-            metas.append(load_meta(d.name))
+            try:
+                metas.append(load_meta(d.name))
+            except (ValueError, TypeError):
+                continue  # one damaged document must not hide the rest
     return sorted(metas, key=lambda m: m.created, reverse=True)
 
 

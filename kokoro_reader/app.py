@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import json
 import logging
 import shutil
 import subprocess
@@ -25,6 +26,17 @@ logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(name
 log = logging.getLogger(__name__)
 
 STATIC = Path(__file__).parent / "static"
+VOICES = [v for v in json.loads((Path(__file__).parent / "voices.json").read_text()) if v.get("available", True)]
+VOICE_IDS = {v["id"] for v in VOICES}
+PREVIEW_TEXT = {
+    "a": "Here is how I sound. The committee reviewed the evidence carefully before publishing its findings.",
+    "b": "Here is how I sound. The committee reviewed the evidence carefully before publishing its findings.",
+    "e": "Así sueno yo. El comité revisó las pruebas con cuidado antes de publicar sus conclusiones.",
+    "f": "Voici ma voix. Le comité a examiné les preuves avec soin avant de publier ses conclusions.",
+    "h": "मेरी आवाज़ ऐसी है। समिति ने निष्कर्ष प्रकाशित करने से पहले साक्ष्यों की सावधानी से समीक्षा की।",
+    "i": "Ecco la mia voce. Il comitato ha esaminato attentamente le prove prima di pubblicare le conclusioni.",
+    "p": "Esta é a minha voz. O comitê analisou as evidências com cuidado antes de publicar as conclusões.",
+}
 ALLOWED = {".pdf", ".epub", ".txt", ".md", ".markdown", ".xps", ".mobi", ".fb2"}
 
 synth = Synth()
@@ -48,6 +60,11 @@ app.add_middleware(CORSMiddleware, allow_origins=["*"], allow_methods=["*"], all
 # ---------- documents ----------
 
 
+def _check_voice(voice: str) -> None:
+    if voice not in VOICE_IDS:
+        raise HTTPException(400, f"unknown or unavailable voice {voice!r}")
+
+
 @app.get("/api/docs")
 def api_list_docs():
     return [asdict(m) for m in store.list_docs()]
@@ -55,6 +72,7 @@ def api_list_docs():
 
 @app.post("/api/docs")
 async def api_upload(file: UploadFile, voice: str = "af_heart"):
+    _check_voice(voice)
     suffix = Path(file.filename or "").suffix.lower()
     if suffix not in ALLOWED:
         raise HTTPException(400, f"unsupported file type {suffix!r}")
@@ -82,6 +100,7 @@ class TextUpload(BaseModel):
 @app.post("/api/docs/text")
 def api_upload_text(body: TextUpload):
     """Pasted or extension-supplied text. The extension sends the page's readable text."""
+    _check_voice(body.voice)
     segments = segment(clean_text(body.text))
     if not segments:
         raise HTTPException(400, "no readable text")
@@ -99,6 +118,7 @@ class UrlUpload(BaseModel):
 @app.post("/api/docs/url")
 def api_upload_url(body: UrlUpload):
     """Fetch a URL server-side. PDFs and EPUBs go through the file path, web pages through article extraction."""
+    _check_voice(body.voice)
     try:
         title, path, text = fetch(body.url)
     except FetchError as e:
@@ -142,9 +162,11 @@ class Position(BaseModel):
 
 @app.put("/api/docs/{doc_id}/position")
 def api_position(doc_id: str, pos: Position):
-    meta = store.load_meta(doc_id)
-    meta.position = {"segment": max(0, min(pos.segment, meta.segment_count - 1)), "offset": max(0.0, pos.offset)}
-    store.save_meta(meta)
+    with store.META_LOCK:
+        meta = store.load_meta(doc_id)
+        meta = store.update_meta(
+            doc_id, position={"segment": max(0, min(pos.segment, meta.segment_count - 1)), "offset": max(0.0, pos.offset)}
+        )
     worker.focus(doc_id, meta.position["segment"])
     return meta.position
 
@@ -155,11 +177,9 @@ class VoiceChange(BaseModel):
 
 @app.put("/api/docs/{doc_id}/voice")
 def api_voice(doc_id: str, body: VoiceChange):
-    if body.voice not in synth.voices():
+    if body.voice not in VOICE_IDS:
         raise HTTPException(400, "unknown voice")
-    meta = store.load_meta(doc_id)
-    meta.voice = body.voice
-    store.save_meta(meta)
+    meta = store.update_meta(doc_id, voice=body.voice)
     worker.focus(doc_id, meta.position["segment"])
     return {"voice": meta.voice}
 
@@ -209,7 +229,20 @@ def api_export(doc_id: str):
 
 @app.get("/api/voices")
 def api_voices():
-    return synth.voices()
+    return VOICES
+
+
+@app.get("/api/voices/{voice}/preview")
+def api_voice_preview(voice: str):
+    """A short sample sentence in the voice, cached on disk after the first request."""
+    if voice not in VOICE_IDS:
+        raise HTTPException(404, "unknown voice")
+    p = store.DATA_DIR / "previews" / f"{voice}.wav"
+    if not p.exists():
+        from .synth import write_wav
+
+        write_wav(p, synth.synth(PREVIEW_TEXT.get(voice[0], PREVIEW_TEXT["a"]), voice))
+    return FileResponse(p, media_type="audio/wav")
 
 
 # ---------- raw speech API (OpenAI-shaped, streams PCM or WAV) ----------

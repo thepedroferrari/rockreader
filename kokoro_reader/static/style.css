@@ -52,3 +52,6 @@ input[type=text], input[type=url], textarea { font: inherit; color: inherit; bac
   border-radius: 8px; padding: 8px 10px; width: 100%; display: block; margin-bottom: 8px; }
 textarea { resize: vertical; min-height: 120px; }
 .hint { margin: 0; font-size: .8rem; }
+
+.row.small button.preview { padding: 2px 8px; font-size: .8rem; }
+select { max-width: 100%; }

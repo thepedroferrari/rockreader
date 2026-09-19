@@ -37,7 +37,7 @@ Three ways to add something to the library:
 
 Text is cleaned (hyphen joins, page numbers, citation brackets, URLs, emails removed) and split into paragraphs of at most ~700 characters.
 - Click any paragraph to jump there. Keyboard: space play/pause, left/right 15 s, up/down paragraph. Headphone and media keys work through the browser's media controls.
-- Voice can be changed per document; audio regenerates for the new voice, the old one stays cached.
+- Voices are grouped by accent and gender and labelled with the official quality grade plus three measured character words (pitch, pitch movement, pace), e.g. "Onyx · deep, lively, measured · grade D". The play button next to the picker plays a sample sentence. Voice can be changed per document mid-listen; audio regenerates for the new voice, the old one stays cached.
 - Export MP3 becomes active once every paragraph is generated (needs `ffmpeg`, installed by `install.sh`).
 - Position is saved on the server every few seconds, so you can continue on another device.
 
@@ -62,7 +62,7 @@ curl -sN localhost:8880/v1/audio/speech \
 
 Reader endpoints: `POST /api/docs` (multipart file), `POST /api/docs/text` (`{title, text, voice}`), `POST /api/docs/url` (`{url, voice}`). All return the document record; open `/#<id>` to read it. `examples/stream_client.py` shows the client side in plain Python.
 
-Voices: `GET /api/voices`. Prefix is language and gender: `af`/`am` American, `bf`/`bm` British, then `e` Spanish, `f` French, `h` Hindi, `i` Italian, `j` Japanese, `p` Portuguese, `z` Mandarin. Non-English voices need `espeak-ng` (installed by `install.sh`).
+Voices: `GET /api/voices` returns the catalog (id, name, language, gender, grade, character words, measured pitch and pace). `GET /api/voices/<id>/preview` returns a sample WAV. The catalog is built by `scripts/build_voice_catalog.py`, which synthesises one sentence per voice and measures it; re-run it after a model update. Japanese and Mandarin voices are listed as unavailable until `misaki[ja]` / `misaki[zh]` are installed. Non-English voices need `espeak-ng` (installed by `install.sh`).
 
 ## Layout
 

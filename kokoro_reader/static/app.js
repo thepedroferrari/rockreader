@@ -16,12 +16,41 @@ let saveTimer = null;
 
 // ---------- library ----------
 
+// Voice picker: grouped by accent and gender, best-graded first, with measured character words.
+const GRADE_ORDER = ["A", "A-", "B+", "B", "B-", "C+", "C", "C-", "D+", "D", "D-", "F+", "F"];
+function voiceLabel(v) {
+  const grade = v.grade ? ` · grade ${v.grade}` : "";
+  return `${v.name} · ${v.character.join(", ")}${grade}`;
+}
 async function loadVoices() {
   const voices = await api("/api/voices");
-  for (const sel of [$("upload-voice"), $("voice")]) {
-    sel.innerHTML = voices.map((v) => `<option>${v}</option>`).join("");
+  const groups = new Map();
+  for (const v of voices) {
+    const key = `${v.language}, ${v.gender}`;
+    if (!groups.has(key)) groups.set(key, []);
+    groups.get(key).push(v);
   }
+  const rank = (v) => (v.grade ? GRADE_ORDER.indexOf(v.grade) : 99);
+  let html = "";
+  for (const [key, list] of groups) {
+    list.sort((a, b) => rank(a) - rank(b));
+    html += `<optgroup label="${key}">` + list.map((v) => `<option value="${v.id}">${voiceLabel(v)}</option>`).join("") + `</optgroup>`;
+  }
+  for (const sel of [$("upload-voice"), $("voice")]) sel.innerHTML = html;
   $("upload-voice").value = localStorage.getItem("voice") || "af_heart";
+}
+
+// Preview: plays a sample sentence in the voice chosen in the select next to the button.
+const previewAudio = new Audio();
+for (const btn of document.querySelectorAll(".preview")) {
+  btn.addEventListener("click", () => {
+    const voice = $(btn.dataset.for).value;
+    if (!previewAudio.paused && previewAudio.dataset.voice === voice) { previewAudio.pause(); return; }
+    if (!audio.paused) audio.pause();
+    previewAudio.src = `/api/voices/${voice}/preview`;
+    previewAudio.dataset.voice = voice;
+    previewAudio.play().catch(() => {});
+  });
 }
 
 async function showLibrary() {
