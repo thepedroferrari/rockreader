@@ -4,6 +4,14 @@ RockReader is a local text-to-speech reader for long documents, built for Apple 
 
 It also exposes a plain speech endpoint (`POST /v1/audio/speech`) that streams audio for any text you send it.
 
+**Hear it:** [readme.mp3](docs/readme.mp3) is this README, read by the Heart voice and exported from the app (5 min, 4 MB).
+
+<p align="center"><img src="docs/reader.png" width="720" alt="Reading a paper: the current paragraph is highlighted, the track above the controls shows generated paragraphs, and the readout shows time left."></p>
+
+<p align="center"><img src="docs/library.png" width="440" alt="Library: file, paste or URL input and the list of documents."> <img src="docs/voices.png" width="440" alt="Voice picker: voices grouped by accent and gender, with grade, character words and a sample button."></p>
+
+<p align="center"><img src="docs/phone.png" width="260" alt="The reader on a phone."></p>
+
 ## Why this setup
 
 - **Kokoro-82M on MLX** (via `mlx-audio`): runs natively on the Apple GPU, about 300 MB of memory, 5-20x faster than realtime depending on the chip. Consistent pronunciation from a dictionary-based phonemizer, which suits academic text. Larger LLM-style voices (Orpheus 3B and friends) need ~8 GB, run near realtime, and can repeat or skip phrases on long input.
