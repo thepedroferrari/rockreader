@@ -1,0 +1,14 @@
+<!doctype html>
+<html><head><meta charset="utf-8"><title>RockReader options</title>
+<style>
+  body { font: 14px system-ui; padding: 16px; width: 320px; }
+  label { display: block; margin-bottom: 12px; }
+  input, select { width: 100%; padding: 6px 8px; font: inherit; margin-top: 4px; box-sizing: border-box; }
+  #status { color: #2a7; height: 1.2em; }
+</style></head>
+<body>
+  <label>Server address <input id="server" type="url" placeholder="http://rockreader.local:8880"></label>
+  <label>Voice <select id="voice"></select></label>
+  <button id="save">Save</button> <span id="status"></span>
+  <script src="options.js"></script>
+</body></html>

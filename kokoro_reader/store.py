@@ -45,6 +45,17 @@ def create_doc(title: str, filename: str, segments: list[str], source: Path, voi
     return meta
 
 
+def create_text_doc(title: str, source: str, segments: list[str], text: str, voice: str) -> DocMeta:
+    doc_id = secrets.token_hex(6)
+    d = doc_dir(doc_id)
+    (d / "audio").mkdir(parents=True)
+    (d / "source.txt").write_text(text)
+    (d / "segments.json").write_text(json.dumps(segments, ensure_ascii=False))
+    meta = DocMeta(id=doc_id, title=title, filename=source, created=time.time(), segment_count=len(segments), voice=voice)
+    save_meta(meta)
+    return meta
+
+
 def save_meta(meta: DocMeta) -> None:
     tmp = doc_dir(meta.id) / "meta.json.tmp"
     tmp.write_text(json.dumps(asdict(meta)))

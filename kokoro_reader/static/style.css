@@ -44,3 +44,11 @@ footer { position: sticky; bottom: 0; background: var(--card); border-top: 1px s
 .controls { display: flex; justify-content: center; align-items: center; gap: 10px; }
 #export { color: var(--accent); text-decoration: none; }
 #export.disabled { color: var(--dim); pointer-events: none; }
+
+.tabs { display: flex; gap: 4px; margin-bottom: 12px; border-bottom: 1px solid var(--line); }
+.tab { border: 0; background: none; border-radius: 0; padding: 6px 12px; color: var(--muted); border-bottom: 2px solid transparent; margin-bottom: -1px; }
+.tab.active { color: var(--fg); border-bottom-color: var(--accent); }
+input[type=text], input[type=url], textarea { font: inherit; color: inherit; background: var(--bg); border: 1px solid var(--line);
+  border-radius: 8px; padding: 8px 10px; width: 100%; display: block; margin-bottom: 8px; }
+textarea { resize: vertical; min-height: 120px; }
+.hint { margin: 0; font-size: .8rem; }

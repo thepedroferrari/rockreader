@@ -16,10 +16,25 @@
 
 <main id="library">
   <form id="upload" class="card">
-    <label class="drop">
-      <input type="file" id="file" accept=".pdf,.epub,.txt,.md,.xps,.mobi,.fb2">
-      <span>Drop a PDF, EPUB, TXT or Markdown file here, or click to choose</span>
-    </label>
+    <div class="tabs" role="tablist">
+      <button type="button" class="tab active" data-tab="file">File</button>
+      <button type="button" class="tab" data-tab="paste">Paste</button>
+      <button type="button" class="tab" data-tab="url">URL</button>
+    </div>
+    <div class="pane" data-pane="file">
+      <label class="drop">
+        <input type="file" id="file" accept=".pdf,.epub,.txt,.md,.xps,.mobi,.fb2">
+        <span id="drop-label">Drop a PDF, EPUB, TXT or Markdown file here, or click to choose</span>
+      </label>
+    </div>
+    <div class="pane" data-pane="paste" hidden>
+      <input type="text" id="paste-title" placeholder="Title (optional)">
+      <textarea id="paste-text" rows="8" placeholder="Paste text here"></textarea>
+    </div>
+    <div class="pane" data-pane="url" hidden>
+      <input type="url" id="url" placeholder="https://arxiv.org/abs/… or any article link">
+      <p class="muted hint">PDF and EPUB links download directly. Web pages get their article text extracted. Pages behind a login need the browser extension.</p>
+    </div>
     <div class="row">
       <label>Voice <select id="upload-voice"></select></label>
       <button type="submit" id="upload-btn" disabled>Add to library</button>

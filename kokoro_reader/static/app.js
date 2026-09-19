@@ -55,24 +55,54 @@ $("docs").addEventListener("click", async (e) => {
   openDoc(li.dataset.id);
 });
 
-$("file").addEventListener("change", () => { $("upload-btn").disabled = !$("file").files.length; });
+let inputMode = "file";
+function refreshUploadButton() {
+  const ok = inputMode === "file" ? $("file").files.length > 0
+    : inputMode === "paste" ? $("paste-text").value.trim().length > 0
+    : $("url").value.trim().length > 0;
+  $("upload-btn").disabled = !ok;
+}
+for (const tab of document.querySelectorAll(".tab")) {
+  tab.addEventListener("click", () => {
+    inputMode = tab.dataset.tab;
+    for (const t of document.querySelectorAll(".tab")) t.classList.toggle("active", t === tab);
+    for (const p of document.querySelectorAll(".pane")) p.hidden = p.dataset.pane !== inputMode;
+    refreshUploadButton();
+  });
+}
+$("file").addEventListener("change", () => {
+  const f = $("file").files[0];
+  $("drop-label").textContent = f ? f.name : "Drop a PDF, EPUB, TXT or Markdown file here, or click to choose";
+  refreshUploadButton();
+});
+$("paste-text").addEventListener("input", refreshUploadButton);
+$("url").addEventListener("input", refreshUploadButton);
 const drop = document.querySelector(".drop");
 drop.addEventListener("dragover", (e) => { e.preventDefault(); drop.classList.add("over"); });
 drop.addEventListener("dragleave", () => drop.classList.remove("over"));
 drop.addEventListener("drop", (e) => {
   e.preventDefault(); drop.classList.remove("over");
-  $("file").files = e.dataTransfer.files; $("upload-btn").disabled = !$("file").files.length;
+  $("file").files = e.dataTransfer.files; $("file").dispatchEvent(new Event("change"));
 });
 $("upload").addEventListener("submit", async (e) => {
   e.preventDefault();
-  const fd = new FormData();
-  fd.append("file", $("file").files[0]);
   const voice = $("upload-voice").value;
   localStorage.setItem("voice", voice);
-  $("upload-btn").disabled = true; $("upload-btn").textContent = "Extracting text…";
+  $("upload-btn").disabled = true; $("upload-btn").textContent = inputMode === "url" ? "Fetching…" : "Extracting text…";
+  const json = (body) => ({ method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(body) });
   try {
-    const meta = await api(`/api/docs?voice=${voice}`, { method: "POST", body: fd });
+    let meta;
+    if (inputMode === "file") {
+      const fd = new FormData();
+      fd.append("file", $("file").files[0]);
+      meta = await api(`/api/docs?voice=${voice}`, { method: "POST", body: fd });
+    } else if (inputMode === "paste") {
+      meta = await api("/api/docs/text", json({ title: $("paste-title").value, text: $("paste-text").value, voice }));
+    } else {
+      meta = await api("/api/docs/url", json({ url: $("url").value, voice }));
+    }
     $("upload").reset();
+    $("file").dispatchEvent(new Event("change"));
     openDoc(meta.id);
   } catch (err) {
     alert(err.message);

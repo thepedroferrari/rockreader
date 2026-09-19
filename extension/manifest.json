@@ -1,0 +1,12 @@
+{
+  "manifest_version": 3,
+  "name": "RockReader",
+  "version": "0.1.0",
+  "description": "Send the current page, or a selection, to your RockReader server and listen to it.",
+  "permissions": ["activeTab", "scripting", "contextMenus", "storage"],
+  "host_permissions": ["http://*/*", "https://*/*"],
+  "action": { "default_title": "Read this page with RockReader" },
+  "background": { "service_worker": "background.js" },
+  "options_ui": { "page": "options.html", "open_in_tab": false },
+  "icons": { "128": "icon.png" }
+}

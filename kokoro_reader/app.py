@@ -11,12 +11,14 @@ from dataclasses import asdict
 from pathlib import Path
 
 from fastapi import FastAPI, HTTPException, UploadFile
+from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import FileResponse, StreamingResponse
 from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel
 
 from . import store
-from .extract import document_segments
+from .extract import clean_text, document_segments, segment
+from .fetch import FetchError, fetch
 from .synth import Synth, Worker, to_pcm16, wav_header
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(name)s: %(message)s")
@@ -39,6 +41,8 @@ async def lifespan(app: FastAPI):
 
 
 app = FastAPI(title="RockReader", lifespan=lifespan)
+# The browser extension posts from arbitrary page origins.
+app.add_middleware(CORSMiddleware, allow_origins=["*"], allow_methods=["*"], allow_headers=["*"])
 
 
 # ---------- documents ----------
@@ -64,6 +68,54 @@ async def api_upload(file: UploadFile, voice: str = "af_heart"):
         meta = store.create_doc(title, file.filename or "upload", segments, tmp_path, voice)
     finally:
         tmp_path.unlink(missing_ok=True)
+    worker.focus(meta.id, 0)
+    return asdict(meta)
+
+
+class TextUpload(BaseModel):
+    title: str = ""
+    text: str
+    voice: str = "af_heart"
+    source_url: str | None = None
+
+
+@app.post("/api/docs/text")
+def api_upload_text(body: TextUpload):
+    """Pasted or extension-supplied text. The extension sends the page's readable text."""
+    segments = segment(clean_text(body.text))
+    if not segments:
+        raise HTTPException(400, "no readable text")
+    title = body.title.strip() or segments[0][:60].rsplit(" ", 1)[0]
+    meta = store.create_text_doc(title, body.source_url or "pasted text", segments, body.text, body.voice)
+    worker.focus(meta.id, 0)
+    return asdict(meta)
+
+
+class UrlUpload(BaseModel):
+    url: str
+    voice: str = "af_heart"
+
+
+@app.post("/api/docs/url")
+def api_upload_url(body: UrlUpload):
+    """Fetch a URL server-side. PDFs and EPUBs go through the file path, web pages through article extraction."""
+    try:
+        title, path, text = fetch(body.url)
+    except FetchError as e:
+        raise HTTPException(400, str(e))
+    if path is not None:
+        try:
+            title, segments = document_segments(path, title)
+            if not segments:
+                raise HTTPException(400, "no readable text found in document")
+            meta = store.create_doc(title, body.url, segments, path, body.voice)
+        finally:
+            path.unlink(missing_ok=True)
+    else:
+        segments = segment(clean_text(text or ""))
+        if not segments:
+            raise HTTPException(400, "no readable text")
+        meta = store.create_text_doc(title, body.url, segments, text or "", body.voice)
     worker.focus(meta.id, 0)
     return asdict(meta)
 
